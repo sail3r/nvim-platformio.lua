@@ -38,16 +38,24 @@ function M.file_exists(name)
   end
 end
 
+-- Directory of the nearest platformio.ini at or above the buffer's file (the
+-- cwd for unnamed buffers), or nil. Unlike get_platformioRootDir() it neither
+-- caches the result nor reports a missing project.
+function M.find_platformioRootDir(buf)
+  local path = vim.api.nvim_buf_get_name(buf)
+  if path == '' then
+    path = vim.fn.getcwd()
+  end
+  local match = vim.fs.find({ 'platformio.ini' }, { upward = true, path = path })
+  if #match > 0 then
+    return vim.fs.dirname(match[1])
+  end
+  return nil
+end
+
 function M.get_platformioRootDir()
   if vim.g.platformioRootDir == nil then
-    local path = vim.api.nvim_buf_get_name(0)
-    if path == '' then
-      path = vim.fn.getcwd()
-    end
-    local match = vim.fs.find({ 'platformio.ini' }, { upward = true, path = path })
-    if #match > 0 then
-      vim.g.platformioRootDir = vim.fs.dirname(match[1])
-    end
+    vim.g.platformioRootDir = M.find_platformioRootDir(0)
 
     if vim.g.platformioRootDir == nil then
       vim.notify('Could not find platformio.ini, run :Pioinit to create a new project', vim.log.levels.ERROR)

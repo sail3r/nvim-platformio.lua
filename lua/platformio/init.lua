@@ -3,6 +3,7 @@ M.config = {
   lsp = 'ccls',
   menu_key = nil,
   menu_name = 'PlatformIO',
+  project_only = false,
   debug = false,
   clangd_source = 'ccls',
   picker_backend = 'auto',
@@ -159,6 +160,7 @@ function M.setup(user_config)
       menu_key = true,
       menu_name = true,
       menu_bindings = true,
+      project_only = true,
       debug = true,
       clangd_source = true,
       picker_backend = true,
@@ -206,6 +208,15 @@ function M.setup(user_config)
         },
       }, true, {})
       user_config.picker_backend = M.config.picker_backend
+    end
+    if user_config.project_only ~= nil and type(user_config.project_only) ~= 'boolean' then
+      vim.api.nvim_echo({
+        {
+          'Invalid PlatformIO project_only {allowed true or false} (default "' .. tostring(M.config.project_only) .. '" will be used)',
+          'ErrorMsg',
+        },
+      }, true, {})
+      user_config.project_only = M.config.project_only
     end
 
     if not err then -- if no error, merge user_config to M.config
