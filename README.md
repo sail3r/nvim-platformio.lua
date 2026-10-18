@@ -69,6 +69,7 @@ vim.g.pioConfig ={
   picker_backend = 'auto', -- value: auto | telescope | snacks | mini_pick | ui_select
                            -- default: auto, check :help platformio-picker
   menu_key = '<leader>\\',  -- replace this menu key  to your convenience
+  project_only = false,     -- true: menu only in buffers inside a PlatformIO project, check :help platformio-project_only
   debug = false             -- enable debug messages
 } 
 local pok, platformio = pcall(require, 'platformio')
@@ -249,6 +250,12 @@ It's possible to lazy load the plugin using Lazy.nvim, this will load the plugin
 
 ```lua
 cmd = { 'Pioinit', 'PioLSP', 'Piorun', 'Piocmdh', 'Piocmdf', 'Piolib', 'Piomon', 'Piolsserial', 'Piodebug', 'PioTermList' },
+```
+
+With `project_only = true`, don't lazy-load on the menu key with `keys` (lazy.nvim's stub mapping is global, in every buffer). Load the plugin when a file opens instead:
+
+```lua
+event = { 'BufReadPost', 'BufNewFile' },
 ```
 
 

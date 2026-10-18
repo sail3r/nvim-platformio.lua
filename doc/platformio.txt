@@ -183,6 +183,17 @@ menu_bindings                                          *platformio-menu_bindings
     copy and edit. Note that a partial table does not selectively override
     individual default entries — provide the whole tree if you customize it.
 
+project_only                                            *platformio-project_only*
+    When `true`, the |platformio-menu_key| menu is added only to buffers
+    whose file is inside a PlatformIO project: `platformio.ini` exists in the
+    file's directory or in any parent directory. Unnamed buffers are checked
+    against the current working directory. The current buffer is checked
+    when the plugin is set up, and every buffer on |BufEnter|. Do not
+    lazy-load the plugin on the menu key (lazy.nvim `keys`): that stub
+    mapping is global. Load it when a file opens instead, e.g.
+    `event = { 'BufReadPost', 'BufNewFile' }`.
+    The `:Pio*` commands are not affected. Default: `false`.
+
 debug                                                          *platformio-debug*
     When `true`, echoes extra diagnostic info (terminal name, window/buffer
     ids, job id) each time a PIO terminal opens. Default: `false`.

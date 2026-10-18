@@ -16,5 +16,6 @@ platformio-menu_bindings	platformio.txt	/*platformio-menu_bindings*
 platformio-menu_key	platformio.txt	/*platformio-menu_key*
 platformio-menu_name	platformio.txt	/*platformio-menu_name*
 platformio-picker	platformio.txt	/*platformio-picker*
+platformio-project_only	platformio.txt	/*platformio-project_only*
 platformio-usage	platformio.txt	/*platformio-usage*
 platformio.lua	platformio.txt	/*platformio.lua*
