@@ -96,31 +96,13 @@ function M.async_shell_cmd(cmd, callback)
 end
 
 function M.shell_cmd_blocking(args, working_dir)
-  if vim.system then
-    local ok, res = pcall(function()
-      return vim.system(args, { cwd = working_dir, text = true }):wait()
-    end)
-    if not ok then
-      return nil, 'failed to spawn command: ' .. tostring(res)
-    end
-    return res.stdout
-  else
-    -- Fallback for Neovim < 0.10.0 using vim.fn.system
-    local cmd_str = table.concat(args, ' ')
-    local old_dir = nil
-    if working_dir then
-      old_dir = vim.fn.getcwd()
-      vim.cmd('cd ' .. vim.fn.fnameescape(working_dir))
-    end
-
-    local stdout = vim.fn.system(cmd_str)
-
-    if old_dir then
-      vim.cmd('cd ' .. vim.fn.fnameescape(old_dir))
-    end
-
-    return stdout
+  local ok, res = pcall(function()
+    return vim.system(args, { cwd = working_dir, text = true }):wait()
+  end)
+  if not ok then
+    return nil, 'failed to spawn command: ' .. tostring(res)
   end
+  return res.stdout
 end
 
 return M
