@@ -102,16 +102,29 @@ function M.gen_clangd_config()
   gen_compile_commands(build_flags)
 end
 
+local function run_pio(args)
+  local stdout, err = utils.shell_cmd_blocking(args, utils.get_platformioRootDir())
+  if not stdout then
+    vim.notify('PioLSP: ' .. err, vim.log.levels.ERROR)
+    return false
+  end
+  return true
+end
+
 function M.piolsp()
   if not utils.pio_install_check() then
     return
   end
 
   if config.lsp == 'clangd' and config.clangd_source == 'compiledb' then
-    utils.shell_cmd_blocking({ 'pio', 'run', '-t', 'compiledb' }, utils.get_platformioRootDir())
+    if not run_pio({ 'pio', 'run', '-t', 'compiledb' }) then
+      return
+    end
     gitignore_lsp_configs('compile_commands.json')
   else
-    utils.shell_cmd_blocking({ 'pio', 'project', 'init', '--ide=vim' }, utils.get_platformioRootDir())
+    if not run_pio({ 'pio', 'project', 'init', '--ide=vim' }) then
+      return
+    end
 
     if config.lsp == 'clangd' then
       M.gen_clangd_config()

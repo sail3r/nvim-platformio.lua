@@ -95,12 +95,19 @@ function M.async_shell_cmd(cmd, callback)
   })
 end
 
+-- Returns stdout, or nil and a message when the command cannot be started or
+-- exits non-zero. PlatformIO Core prints its errors to stderr.
 function M.shell_cmd_blocking(args, working_dir)
   local ok, res = pcall(function()
     return vim.system(args, { cwd = working_dir, text = true }):wait()
   end)
   if not ok then
     return nil, 'failed to spawn command: ' .. tostring(res)
+  end
+  if res.code ~= 0 then
+    local stderr = vim.trim(res.stderr or '')
+    local output = stderr ~= '' and stderr or vim.trim(res.stdout or '')
+    return nil, string.format('`%s` exited with code %d\n%s', table.concat(args, ' '), res.code, output)
   end
   return res.stdout
 end
