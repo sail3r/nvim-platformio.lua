@@ -10,7 +10,9 @@ function M.piolib(lib_arg_list)
     return
   end
 
-  local lib_str = table.concat(lib_arg_list, ' ')
+  -- The registry also returns platforms and tools; Core's own searches add
+  -- the same type qualifier (registry/client.py list_packages).
+  local lib_str = 'type:"library" ' .. table.concat(lib_arg_list, ' ')
 
   local url = 'https://api.registry.platformio.org/v3/search'
   local res = curl.get(url, {
