@@ -21,7 +21,7 @@ local function escape_flags(flags)
 end
 
 local function process_ccls()
-  local flags_allowed = { '%', '-W', '-std' }
+  local flags_allowed = { '-W', '-std' }
 
   local f = io.open(vim.fs.joinpath(vim.g.platformioRootDir, '.ccls'), 'rb')
   if not f then
