@@ -22,7 +22,7 @@ function M.sync_ttylist()
   if not utils.pio_install_check() then
     return
   end
-  utils.async_shell_cmd({ 'platformio', 'device', 'list', '--json-output' }, M.parse_tty)
+  utils.async_shell_cmd({ 'pio', 'device', 'list', '--json-output' }, M.parse_tty)
 end
 
 function M.sync_ttylist_await()
@@ -32,7 +32,7 @@ function M.sync_ttylist_await()
   local done = false
   local result = nil
 
-  utils.async_shell_cmd({ 'platformio', 'device', 'list', '--json-output' }, function(lines, code)
+  utils.async_shell_cmd({ 'pio', 'device', 'list', '--json-output' }, function(lines, code)
     result = { lines = lines, code = code }
     done = true
   end)
