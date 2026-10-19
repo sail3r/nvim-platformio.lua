@@ -33,14 +33,15 @@ function M.piolib(lib_arg_list)
   if res['status'] == 200 then
     local json_data = vim.json.decode(res['body'])
     picker.pick_library(json_data.items or {}, function(selected_library)
-      local owner = utils.sanitize_shell_arg((selected_library.owner and selected_library.owner.username) or '')
-      local name = utils.sanitize_shell_arg(selected_library.name or '')
+      local owner = (selected_library.owner and selected_library.owner.username) or ''
+      local name = selected_library.name or ''
       if owner == '' or name == '' then
         vim.notify('Invalid library selection: missing owner or name.', vim.log.levels.ERROR)
         return
       end
-      local pkg_name = owner .. '/' .. name
-      local command = 'pio pkg install --library "' .. pkg_name .. '"'
+      -- Registry names can contain spaces; quoting keeps them intact and
+      -- stops shell injection. The terminal runs 'shell', as shellescape() assumes.
+      local command = 'pio pkg install --library ' .. vim.fn.shellescape(owner .. '/' .. name)
       terminal.ToggleTerminal(command, 'float', function()
         vim.cmd(':PioLSP')
       end, utils.get_platformioRootDir())

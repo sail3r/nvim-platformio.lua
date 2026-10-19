@@ -10,9 +10,7 @@ local function init_project(board_details, selected_framework)
   if framework == 'none' then
     framework = ''
   end
-  local board_id = utils.sanitize_shell_arg(board_details.id)
-  local framework_arg = utils.sanitize_shell_arg(framework)
-  local command = 'pio project init --board ' .. board_id .. ' --project-option "framework=' .. framework_arg .. '"'
+  local command = 'pio project init --board ' .. vim.fn.shellescape(board_details.id) .. ' --project-option ' .. vim.fn.shellescape('framework=' .. framework)
   terminal.ToggleTerminal(command, 'float', function()
     vim.cmd(':PioLSP')
     boilerplate_gen(framework)
