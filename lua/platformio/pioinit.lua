@@ -3,17 +3,21 @@ local M = {}
 local utils = require('platformio.utils')
 local terminal = require('platformio.terminal')
 local picker = require('platformio.pickers')
-local boilerplate_gen = require('platformio.boilerplate').boilerplate_gen
 
 local function init_project(board_details, selected_framework)
   local framework = selected_framework
   if framework == 'none' then
     framework = ''
   end
-  local command = 'pio project init --board ' .. vim.fn.shellescape(board_details.id) .. ' --project-option ' .. vim.fn.shellescape('framework=' .. framework)
+  -- Core only writes --sample-code for a resolved environment; with --board,
+  -- --ide is what resolves it (project/commands/init.py).
+  local command = 'pio project init --board '
+    .. vim.fn.shellescape(board_details.id)
+    .. ' --project-option '
+    .. vim.fn.shellescape('framework=' .. framework)
+    .. ' --ide vim --sample-code'
   terminal.ToggleTerminal(command, 'float', function()
     vim.cmd(':PioLSP')
-    boilerplate_gen(framework)
   end)
 end
 
