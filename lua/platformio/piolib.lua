@@ -10,11 +10,7 @@ function M.piolib(lib_arg_list)
     return
   end
 
-  local lib_str = ''
-
-  for _, v in pairs(lib_arg_list) do
-    lib_str = lib_str .. v .. '+'
-  end
+  local lib_str = table.concat(lib_arg_list, ' ')
 
   local url = 'https://api.registry.platformio.org/v3/search'
   local res = curl.get(url, {
