@@ -14,10 +14,11 @@ USAGE                                                    *platformio-usage*
 
                                    *:Pioinit*
 :Pioinit                 Open Neovim in a fresh directory, run `:Pioinit`, and
-                         follow the prompt to initialize a project. A telescope
-                         picker will appear for selecting the board, and then
+                         follow the prompt to initialize a project. A picker
+                         will appear for selecting the board, and then
                          another for choosing the framework. Press enter to
-                         complete the initialization.
+                         complete the initialization. PlatformIO Core writes
+                         its sample code to `src/` (`--sample-code`).
 
                                    *:Piorun*
 :Piorun [arg]            This command builds and uploads the code. Optional

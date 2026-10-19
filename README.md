@@ -20,7 +20,7 @@ editor or memorising `pio` flags. Anything else PlatformIO Core can do is one
 
 - **Project setup in seconds.** `:Pioinit` lets you search every board
   PlatformIO knows, pick a framework, and initialises the project in the
-  current directory.
+  current directory, with PlatformIO's sample code.
 - **Build, upload and monitor.** Commands run in reusable floating or split
   terminals, from the project root: the nearest directory above the current
   file that contains `platformio.ini`.
@@ -35,14 +35,37 @@ editor or memorising `pio` flags. Anything else PlatformIO Core can do is one
   actions under one prefix. It is fully customisable and can be limited to
   buffers inside a PlatformIO project.
 
-## Requirements
+## System requirements
 
-- Neovim 0.12 or newer. On older releases most commands work, but `:PioLSP`
-  can fail: it uses `:lsp restart` and `vim.json.encode()` options that were
-  added in 0.12.
-- [PlatformIO Core](https://docs.platformio.org/en/latest/core/installation/index.html),
-  with `pio` and `platformio` on your `PATH`.
-- `curl`, used by `:Piolib`.
+- [PlatformIO Core](https://docs.platformio.org/en/latest/core/installation/index.html)
+  6.1.7 or newer (`:Pioinit` uses `pio project init --sample-code`). Core
+  6.2 needs Python 3.9 or newer. The `pio` executable must be on your
+  `PATH`; see
+  [Install Shell Commands](https://docs.platformio.org/en/latest/core/installation/shell-commands.html).
+- A command lookup tool, used to check that `pio` is installed: `which` on
+  Linux and macOS, `where.exe` on Windows. macOS and Windows include it. On
+  Arch Linux `which` comes with `base-devel`, not `base`; install it with
+  `pacman -S which`. Without it the plugin reports "Platformio not found in
+  the path" even when PlatformIO is installed.
+- `curl`, used by `:Piolib` through plenary.nvim. macOS includes it, and so
+  does Windows 10 from version 1803.
+- Linux only: uploading and monitoring need PlatformIO's
+  [udev rules](https://docs.platformio.org/en/latest/core/installation/udev-rules.html)
+  (on Arch Linux, the `platformio-core-udev` package) and access to the
+  serial port. Add your user to the group that owns it: usually `uucp` on
+  Arch Linux, `dialout` or `plugdev` on Debian, Ubuntu and Fedora.
+
+Upgrading PlatformIO: the menu item "Upgrade PlatformIO Core" runs
+`pio upgrade`, which upgrades through pip. That suits the installer script
+and pip installs. If PlatformIO came from a system package manager, upgrade
+it with that instead: Arch Linux marks its system Python `EXTERNALLY-MANAGED`,
+so pip will not upgrade the `platformio-core` package (use `pacman -Syu`), and
+for Homebrew installs Core itself recommends `brew update && brew upgrade`.
+
+## Neovim requirements
+
+- Neovim 0.12 or newer. Older releases are not supported; `:PioLSP`, for
+  example, uses `:lsp restart` and `vim.json.encode()` options added in 0.12.
 
 Plugin dependencies:
 
@@ -267,9 +290,10 @@ These are buffer-local to the terminals the plugin opens:
 
 ## Lazy loading
 
-Loading the plugin runs `which pio` and starts `platformio device list` in the
-background, to complete ports for `:Piomon`. To defer that until the plugin is
-needed, add triggers to the spec from [Installation](#installation).
+Loading the plugin checks for `pio` (`which pio`, or `where.exe pio` on
+Windows) and starts `pio device list` in the background, to complete ports
+for `:Piomon`. To defer that until the plugin is needed, add triggers to the
+spec from [Installation](#installation).
 
 ### with `project_only = false` (default)
 
