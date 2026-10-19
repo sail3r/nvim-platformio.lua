@@ -15,7 +15,10 @@ function M.piolib(lib_arg_list)
   local lib_str = 'type:"library" ' .. table.concat(lib_arg_list, ' ')
 
   local url = 'https://api.registry.platformio.org/v3/search'
-  local res = curl.get(url, {
+  local curl_err
+  -- plenary.curl raises when curl fails without on_error, and when the request
+  -- outlives `timeout`. on_error runs in a libuv callback, so it only records.
+  local ok, res = pcall(curl.get, url, {
     insecure = utils.is_windows, -- Windows curl builds often lack a CA bundle, breaking TLS verification
     timeout = 20000,
     headers = { content_type = 'application/json' },
@@ -26,7 +29,14 @@ function M.piolib(lib_arg_list)
       -- page = 1,
       -- limit = 1,
     },
+    on_error = function(err)
+      curl_err = err.message
+    end,
   })
+  if not ok or curl_err then
+    vim.notify('PlatformIO registry request failed: ' .. tostring(curl_err or res), vim.log.levels.ERROR)
+    return
+  end
 
   if res['status'] == 200 then
     local json_data = vim.json.decode(res['body'])
