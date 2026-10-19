@@ -6,7 +6,7 @@ local config = require('platformio').config
 local function enter()
   local shell = vim.o.shell
   if utils.is_windows then
-    return vim.fn.executable('pwsh') and '\r' or '\r\n'
+    return vim.fn.executable('pwsh') == 1 and '\r' or '\r\n'
   elseif shell:find('nu') then
     return '\r'
   else
